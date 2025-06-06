@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maretyui | Courses</title>
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">MARETYUI</div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="nav">Home</a></li>
+            <li><a href="designs.html" class="nav">Designs</a></li>
+            <li><a href="#" class="nav">Team</a></li>
+            <li class="mobile-signup"><a href="signup.html"><button class="sign-up" style="color: #ff0000; border-color: #ff0000;">Sign-up</button></a></li>
+        </ul>
+        <a href="signup.html" class="desktop-signup"><button class="sign-up"  style="color: #ff0000; border-color: #ff0000;">Sign-up</button></a>
+        <div class="navlogo">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <button class="admin-toggle" onclick="toggleAdmin()">Admin Panel</button>
+
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Book a Course</h1>
+                        <div class="success-message" id="successMessage">
+                Course booking submitted successfully! You will receive a confirmation email soon.
+            </div>
+            <!-- Admin Panel -->
+            <div class="admin-panel" id="adminPanel">
+                <h2 class="admin-title">Admin Panel</h2>
+                <div class="admin-controls">
+                    <div class="admin-section">
+                        <h3>Block Date/Time</h3>
+                        <div class="form-group">
+                            <input type="date" id="blockDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <select id="blockTime" class="form-select">
+                                <option value="">All Day</option>
+                                <option value="12:00">12:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                                <option value="18:00">18:00</option>
+                            </select>
+                        </div>
+                        <button onclick="blockDateTime()" class="submit-btn">Block</button>
+                    </div>
+                    <div class="admin-section">
+                        <h3>Blocked Dates & Times</h3>
+                        <div class="blocked-dates-list" id="blockedList">
+                            <!-- Blocked items will appear here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form class="booking-form" id="bookingForm" action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="dcbae632-6e5c-4e16-b68b-236214322aea">
+                <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                <input type="hidden" name="redirect" value="https://maretyui.com">
+                <input type="hidden" name="subject" value="New Course Booking">
+                <input type="hidden" name="course_date" id="hiddenDate" value="">
+                <input type="hidden" name="course_time" id="hiddenTime" value="">
+                
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="name" class="form-input" id="fullName" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-input" id="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Course Type</label>
+                    <select name="course_type" class="form-select" id="courseType" required>
+                        <option value="">Select Course type</option>
+                        <option value="HTMl">HTML Basics</option>
+                        <option value="CSS">CSS Styling</option>
+                        <option value="JS">Javascript</option>
+                        <option value="SEO">SEO-Development</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Select Date</label>
+                    <div class="date-picker-container">
+                        <div class="month-nav">
+                            <button type="button" onclick="changeMonth(-1)">‹</button>
+                            <span class="month-title" id="monthTitle"></span>
+                            <button type="button" onclick="changeMonth(1)">›</button>
+                        </div>
+<div class="date-grid" id="dateGrid"></div>
+                        </div>
+                    </div>
+
+                <div class="form-group" id="timeSlotGroup" style="display: none;">
+                    <label class="form-label">Select Time (UTC) </label>
+                    <div class="time-slots" id="timeSlots"></div>
+                </div>
+                    <button type="submit" class="submit-btn" id="submitBtn" disabled>Book Course <br>! IMPORTANT !<br> NO VISUAL FEEDBACK YET, DONT SPAM</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+
+        let currentDate = new Date();
+        let selectedDate = null;
+        let selectedTime = null;
+
+
+
+
+        let blockedDates = {
+    '2025-06-10': { date: '2025-06-10', time: 'all_day', blocked: true },
+    '2025-06-11': { date: '2025-06-11', time: 'all_day', blocked: true },
+    '2025-06-12': { date: '2025-06-12', time: 'all_day', blocked: true },
+    '2025-06-14': { date: '2025-06-14', time: 'all_day', blocked: true },
+    '2025-06-20': { date: '2025-06-19', time: 'all_day', blocked: true },
+    
+    '2025-06-10_14:00': { date: '2025-06-10', time: '12:00', blocked: true },
+    '2025-06-10_15:00': { date: '2025-06-10', time: '15:00', blocked: true },
+    '2025-06-12_12:00': { date: '2025-06-12', time: '12:00', blocked: true },
+    '2025-06-18_16:00': { date: '2025-06-12', time: '15:00', blocked: true },
+    '2025-06-18_17:00': { date: '2025-06-12', time: '17:00', blocked: true }
+};
+
+
+
+
+        let isAdminMode = false;
+
+        const timeSlots = ['12:00', '13:00', '14:00', '15:00', '16:00', '17:00','18:00' ];
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true') {
+                toggleAdmin();
+            }
+            loadBlockedDates();
+            renderCalendar();
+        });
+
+        const navlogo = document.querySelector('.navlogo');
+        const navLinks = document.querySelector('.nav-links');
+
+        navlogo.addEventListener('click', () => {
+            navlogo.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        function loadBlockedDates() {
+ 
+            updateBlockedList();
+        }
+
+        function saveBlockedDates() {
+            updateBlockedList();
+        }
+
+        function toggleAdmin() {
+            const adminPanel = document.getElementById('adminPanel');
+            isAdminMode = !isAdminMode;
+            adminPanel.style.display = isAdminMode ? 'block' : 'none';
+            
+        }
+
+        function blockDateTime() {
+            const date = document.getElementById('blockDate').value;
+            const time = document.getElementById('blockTime').value;
+            
+            if (!date) return;
+            
+            const key = time ? `${date}_${time}` : date;
+            blockedDates[key] = { date, time: time || 'all_day', blocked: true };
+            
+            saveBlockedDates();
+            renderCalendar();
+            
+            document.getElementById('blockDate').value = '';
+            document.getElementById('blockTime').value = '';
+        }
+        function removeBlocked(key) {
+            delete blockedDates[key];
+            saveBlockedDates();
+            renderCalendar();
+        }
+
+        function updateBlockedList() {
+            const list = document.getElementById('blockedList');
+            list.innerHTML = '';
+            
+            Object.entries(blockedDates).forEach(([key, data]) => {
+                const item = document.createElement('div');
+                item.className = 'blocked-item';
+                
+                const text = data.time === 'all_day' 
+                    ? `${data.date} (All Day)` 
+                    : `${data.date} at ${data.time}`;
+                
+                item.innerHTML = `
+                    <span>${text}</span>
+                    <button class="remove-btn" onclick="removeBlocked('${key}')">Remove</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function getDateAvailability(date) {
+            const dateStr = date.toISOString().split('T')[0];
+            
+            if (blockedDates[dateStr]) {
+                return 'unavailable';
+            }
+            
+            let availableSlots = 0;
+            timeSlots.forEach(slot => {
+                const key = `${dateStr}_${slot}`;
+                if (!blockedDates[key]) {
+                    availableSlots++;
+                }
+            });
+            
+            const availability = availableSlots / timeSlots.length;
+            
+            if (availability >= 0.5) return 'available';
+            if (availability > 0) return 'limited';
+            return 'unavailable';
+        }
+
+        function renderCalendar() {
+            const monthTitle = document.getElementById('monthTitle');
+            const dateGrid = document.getElementById('dateGrid');
+            
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            monthTitle.textContent = new Date(year, month).toLocaleString('default', { 
+                month: 'long', 
+                year: 'numeric' 
+            });
+            
+            dateGrid.innerHTML = '';
+            
+            daysOfWeek.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'date-cell date-header';
+                header.textContent = day;
+                dateGrid.appendChild(header);
+            });
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            
+                for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'date-cell';
+                dateGrid.appendChild(emptyCell);
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const cell = document.createElement('div');
+                cell.className = 'date-cell';
+                cell.textContent = day;
+                
+                if (date < today.setHours(0, 0, 0, 0)) {
+                    cell.classList.add('date-past');
+                } else {
+                    const availability = getDateAvailability(date);
+                    cell.classList.add(`date-${availability}`);
+                    
+                    if (availability !== 'unavailable') {
+                        cell.addEventListener('click', () => selectDate(date));
+                    }
+                }
+                
+                dateGrid.appendChild(cell);
+            }
+        }
+
+        function selectDate(date) {
+            selectedDate = date;
+            selectedTime = null;
+            
+            document.querySelectorAll('.date-selected').forEach(cell => {
+                cell.classList.remove('date-selected');
+            });
+            event.target.classList.add('date-selected');
+            
+            renderTimeSlots();
+            document.getElementById('timeSlotGroup').style.display = 'block';
+            
+            updateSubmitButton();
+        }
+
+        function renderTimeSlots() {
+            const timeSlotsContainer = document.getElementById('timeSlots');
+            timeSlotsContainer.innerHTML = '';
+            
+            if (!selectedDate) return;
+            
+            const dateStr = selectedDate.toISOString().split('T')[0];
+            
+            timeSlots.forEach(slot => {
+                const timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot';
+                timeSlot.textContent = slot;
+                
+                const key = `${dateStr}_${slot}`;
+                const isBlocked = blockedDates[key] || blockedDates[dateStr];
+                
+                if (isBlocked) {
+                    timeSlot.classList.add('unavailable');
+                } else {
+                    timeSlot.addEventListener('click', () => selectTime(slot, timeSlot));
+                }
+                
+                timeSlotsContainer.appendChild(timeSlot);
+            });
+        }
+
+        function selectTime(time, element) {
+            selectedTime = time;
+            
+            document.querySelectorAll('.time-slot.selected').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            updateSubmitButton();
+        }
+
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const courseType = document.getElementById('courseType').value;
+            
+            const isValid = fullName && email && courseType && selectedDate && selectedTime;
+            
+            submitBtn.disabled = !isValid;
+            submitBtn.textContent = isValid ? 'Book Course <br>! IMPORTANT !<br> NO VISUAL FEEDBACK YET, DONT SPAM' : 'Please fill all fields';
+        }
+
+        document.getElementById('fullName').addEventListener('input', updateSubmitButton);
+        document.getElementById('email').addEventListener('input', updateSubmitButton);
+        document.getElementById('courseType').addEventListener('change', updateSubmitButton);
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            document.getElementById('hiddenDate').value = selectedDate.toISOString().split('T')[0];
+            document.getElementById('hiddenTime').value = selectedTime;
+            
+            const key = `${selectedDate.toISOString().split('T')[0]}_${selectedTime}`;
+            blockedDates[key] = { 
+                date: selectedDate.toISOString().split('T')[0], 
+                time: selectedTime, 
+                blocked: true,
+                booking: {
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    courseType: document.getElementById('courseType').value
+                }
+            };
+            
+            saveBlockedDates();
+            
+            const formData = new FormData(this);
+            
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    document.getElementById('bookingForm').reset();
+                    selectedDate = null;
+                    selectedTime = null;
+                    document.getElementById('timeSlotGroup').style.display = 'none';
+                    renderCalendar();
+                    updateSubmitButton();
+                    
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 5000);
+                } else {
+                    alert('Submitted sucessfully');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Sucess!');
+            });
+        });
+
+        renderCalendar();
+    </script>
+</body>
+</html>

@@ -1,39 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-   <link rel="stylesheet" href="mobile.css">
-   <link rel="stylesheet" href="desktop.css" media="screen and (min-width: 40em)">
-   <title>Homepage</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maretyui | Home</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-   <div id="holder">
-      <header>
-         <h1 class="title">Welcome!</h1>
-      </header>
-      <nav>
-         <ul>
-            <li><a href="#">Link #1</a></li>
-            <li><a href="#">Link #2</a></li>
-            <li><a href="#">Link #3</a></li>
-            <li><a href="#">Link #4</a></li>
-         </ul>
-      </nav>
-      <main>
-         <section>
-            <article>
-               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            </article>
-         </section>
-      </main>
-      <aside>
-         <p class="left"><strong>Text 1:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-         <p class="right"><strong>Text 2:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-      </aside>
-      <footer>
-         <p>&copy;2025 Maretyui Production</p>
-      </footer>
-   </div>
+    <nav>
+        <div class="logo">MARETYUI</div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active nav">Home</a></li>
+            <li><a href="designs.html" class="nav">Designs</a></li>
+            <li><a href="#" class="nav">Team</a></li>
+            <li class="mobile-signup"><a href="signup.html"><button class="sign-up">Sign-up</button></a></li>
+        </ul>
+        <a href="signup.html" class="desktop-signup"><button class="sign-up">Sign-up</button></a>
+        <div class="navlogo" onclick="toggleNav()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="carousel-container">
+            <div class="carousel slide active">
+                <button class="carousel-nav prev" onclick="prevSlide()">‹</button>
+                <div class="carousel-content">
+                    <div class="code-preview">
+                        <div class="code-content">
+                        <span class="tag">&lt;!DOCTYPE html&gt;</span>
+                        <span class="tag">&lt;html&gt;</span>
+                        <span class="tag">&lt;head&gt;</span>
+                        <span class="tag">&lt;title&gt;</span>My First Web Page<span class="tag">&lt;/title&gt;</span>
+                        <span class="tag">&lt;/head&gt;</span>
+                        <span class="tag">&lt;body&gt;</span>
+                        <span class="tag">&lt;h1&gt;</span>Welcome to <span">HTML</span><span class="tag">&lt;/h1&gt;</span>
+                        <span class="tag">&lt;p&gt;</span>This is my <span class="attr">first</span> paragraph.<span class="tag">&lt;/p&gt;</span>
+                        <span class="tag">&lt;/body&gt;</span>
+                        <span class="tag">&lt;/html&gt;</span>
+                        </div>
+                    </div>
+                    <div class="course-info">
+                        <h1 class="course-title">HTML Basics</h1>
+                        <p class="course-description">
+                            You want to start developing websites yourself? Learn the basics of web-developing, the HTML-Structure. 
+                            Sign-Up now for free.</p>
+                        <a href="signup.html" class="learn-more">Sign Up</a>
+                    </div>
+                </div>
+                <button class="carousel-nav next" onclick="nextSlide()">›</button>
+            </div>
+
+            <div class="carousel slide">
+                <button class="carousel-nav prev" onclick="prevSlide()">‹</button>
+                <div class="carousel-content">
+                    <div class="code-preview">
+                        <div class="code-content">
+                        <span class="keyword">body</span> {
+                        <span class="attr">background-color</span>: <span class="string">#2c3e50</span>;
+                        <span class="attr">font-family</span>: <span class="string">'Arial', sans-serif</span>;
+                        }
+                        <span class="keyword">.container</span> {
+                        <span class="attr">max-width</span>: <span class="string">1200px</span>;
+                        <span class="attr">margin</span>: <span class="string">0 auto</span>;
+                        <span class="attr">padding</span>: <span class="string">20px</span>;
+                        }
+                        <span class="keyword">h1</span> {
+                        <span class="attr">color</span>: <span class="string">#ecf0f1</span>;
+                        <span class="attr">text-align</span>: <span class="string">center</span>;
+                        }
+                        </div>
+                    </div>
+                    <div class="course-info">
+                        <h1 class="course-title">CSS Styling</h1>
+                        <p class="course-description">
+                            Master the art of styling web pages with CSS. Learn how to create beautiful, responsive designs that bring your HTML 
+                            to life with colors, layouts, and animations.</p>
+                        <a href="signup.html" class="learn-more">Sign Up</a>
+                    </div>
+                </div>
+                <button class="carousel-nav next" onclick="nextSlide()">›</button>
+            </div>
+
+            <div class="carousel slide">
+                <button class="carousel-nav prev" onclick="prevSlide()">‹</button>
+                <div class="carousel-content">
+                    <div class="code-preview">
+                        <div class="code-content">
+<span class="keyword">const</span> todoList = [];
+<span class="keyword">let</span> nextId = <span class="number">1</span>;
+
+<span class="keyword">function</span> <span class="attr">addTodo</span>(<span class="string">task</span>) {
+  <span class="keyword">const</span> newTodo = {
+    id: nextId++,
+    task: task,
+    completed: <span class="keyword">false</span>};
+  todoList.<span class="attr">push</span>(newTodo);
+  <span class="attr">displayTodos</span>();}
+<span class="keyword">function</span> <span class="attr">toggleTodo</span>(<span class="string">id</span>) {
+  <span class="keyword">const</span> todo = todoList.<span class="attr">find</span>(t => t.id === id);
+  <span class="keyword">if</span> (todo) todo.completed = !todo.completed;
+}
+                        </div>
+                    </div>
+                    <div class="course-info">
+                        <h1 class="course-title">JavaScript</h1>
+                        <p class="course-description">
+                            Bring your websites to life with JavaScript! Learn programming fundamentals, 
+                            DOM manipulation, and how to create interactive user experiences that engage your visitors.</p>
+                        <a href="signup.html" class="learn-more">Sign Up</a>
+                    </div>
+                </div>
+                <button class="carousel-nav next" onclick="nextSlide()">›</button>
+            </div>
+
+            <div class="carousel slide">
+                <button class="carousel-nav prev" onclick="prevSlide()">‹</button>
+                <div class="carousel-content">
+                    <div class="code-preview">
+                        <div class="code-content">
+                        <span class="keyword">import</span> React, { <span class="attr">useState</span> } <span class="keyword">from</span> <span class="string">'react'</span>;
+                        <span class="keyword">function</span> <span class="attr">App</span>() {
+                        <span class="keyword">const</span> [count, setCount] = <span class="attr">useState</span>(<span class="string">0</span>);
+                        <span class="keyword">return</span> (
+                        <span class="tag">&lt;div&gt;</span>
+                        <span class="tag">&lt;h1&gt;</span>Count: {count}<span class="tag">&lt;/h1&gt;</span>
+                        <span class="tag">&lt;button</span> <span class="attr">onClick</span>={() => <span class="attr">setCount</span>(count + 1)}<span class="tag">&gt;</span>
+                        Click me!
+                        <span class="tag">&lt;/button&gt;</span>
+                        <span class="tag">&lt;/div&gt;</span>
+                        );
+                        }
+                        </div>
+                   </div>
+                    <div class="course-info">
+                        <h1 class="course-title">SEO-Based Development</h1>
+                        <p class="course-description">
+                            Create the perfect business website.
+                            Learn to modify your website to be easier found on google or other search engines.</p>
+                        <a href="signup.html" class="learn-more">Sign Up</a>
+                    </div>
+                </div>
+                <button class="carousel-nav next" onclick="nextSlide()">›</button>
+            </div>
+            <div class="carousel-indicators">
+                <div class="indicator active" onclick="goToSlide(0)"></div>
+                <div class="indicator" onclick="goToSlide(1)"></div>
+                <div class="indicator" onclick="goToSlide(2)"></div>
+                <div class="indicator" onclick="goToSlide(3)"></div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
 </body>
 </html>
